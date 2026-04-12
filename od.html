@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBLA Cybersecurity Prep</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23060912'/><path d='M16 3 L27 7.5 L27 16 C27 22 22 27.5 16 29.5 C10 27.5 5 22 5 16 L5 7.5 Z' fill='%234f8fff' opacity='0.9'/><path d='M16 5.5 L24.5 9.2 L24.5 16 C24.5 20.8 20.8 25.2 16 27 C11.2 25.2 7.5 20.8 7.5 16 L7.5 9.2 Z' fill='%23060912' opacity='0.6'/><rect x='12' y='15' width='8' height='6' rx='1.5' fill='%2300d4ff'/><path d='M13.5 15 L13.5 13 C13.5 11.3 18.5 11.3 18.5 13 L18.5 15' fill='none' stroke='%2300d4ff' stroke-width='1.8' stroke-linecap='round'/><circle cx='16' cy='18' r='1.2' fill='%23060912'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060912;
+  --surface:#0d1120;
+  --surface2:#141928;
+  --border:rgba(100,120,200,0.15);
+  --border2:rgba(100,120,200,0.28);
+  --blue:#4f8fff;
+  --cyan:#00d4ff;
+  --green:#00e5a0;
+  --red:#ff4f6a;
+  --amber:#ffb830;
+  --purple:#9b6dff;
+  --text:#e8eaf6;
+  --muted:#6b7699;
+  --mono:'IBM Plex Mono',monospace;
+  --head:'Syne',sans-serif;
+  --body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--body);
+  min-height:100vh;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 10%,rgba(79,143,255,0.07) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 40% at 80% 80%,rgba(0,212,255,0.05) 0%,transparent 70%),
+    radial-gradient(ellipse 30% 30% at 50% 50%,rgba(155,109,255,0.04) 0%,transparent 70%);
+}
+
+/* ── SCAN LINE TEXTURE ── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+}
+
+/* ── SCREENS ── */
+.screen{display:none;position:relative;z-index:1;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+
+/* ══════════════════ HOME SCREEN ══════════════════ */
+#home{align-items:center;justify-content:center;padding:2rem 1.5rem;text-align:center}
+
+.home-badge{
+  font-family:var(--mono);font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--cyan);border:1px solid rgba(0,212,255,0.3);border-radius:4px;
+  padding:5px 14px;margin-bottom:2rem;display:inline-block;
+  background:rgba(0,212,255,0.05);
+}
+.home-title{
+  font-family:var(--head);font-size:clamp(2.8rem,8vw,5.5rem);font-weight:800;
+  line-height:0.95;letter-spacing:-2px;margin-bottom:1.2rem;
+  background:linear-gradient(135deg,#fff 0%,var(--cyan) 45%,var(--blue) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.home-title span{display:block}
+.home-sub{
+  font-size:1rem;color:var(--muted);max-width:480px;margin:0 auto 2.5rem;
+  line-height:1.7;
+}
+.home-sub em{color:var(--text);font-style:normal}
+
+.topic-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;max-width:760px;width:100%;margin:0 auto 2.5rem;
+}
+.topic-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:16px;text-align:left;cursor:pointer;
+  transition:border-color 0.2s,background 0.2s,transform 0.15s;
+  position:relative;overflow:hidden;
+}
+.topic-card::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  background:linear-gradient(135deg,var(--card-color,var(--blue)),transparent 60%);
+  transition:opacity 0.25s;
+}
+.topic-card:hover{border-color:var(--card-color,var(--blue));transform:translateY(-2px)}
+.topic-card:hover::before{opacity:0.07}
+.topic-card.selected{border-color:var(--card-color,var(--blue));background:rgba(79,143,255,0.06)}
+.topic-card.selected::before{opacity:0.1}
+.topic-icon{font-size:1.4rem;margin-bottom:8px}
+.topic-name{font-family:var(--head);font-size:0.8rem;font-weight:700;letter-spacing:0.02em;color:var(--text);margin-bottom:3px}
+.topic-count{font-family:var(--mono);font-size:0.6rem;color:var(--muted)}
+.topic-check{
+  position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;
+  background:var(--card-color,var(--blue));display:flex;align-items:center;justify-content:center;
+  font-size:0.6rem;color:#000;opacity:0;transition:opacity 0.2s;
+}
+.topic-card.selected .topic-check{opacity:1}
+
+.home-actions{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:1.5rem}
+.btn-primary{
+  font-family:var(--head);font-size:0.85rem;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;padding:14px 42px;border-radius:8px;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));color:#000;border:none;
+  transition:transform 0.15s,box-shadow 0.2s,filter 0.2s;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,143,255,0.35);filter:brightness(1.1)}
+.btn-primary:active{transform:scale(0.97)}
+.btn-primary:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none;filter:none}
+.btn-ghost{
+  font-family:var(--mono);font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;
+  padding:10px 24px;border-radius:8px;cursor:pointer;background:transparent;
+  border:1px solid var(--border2);color:var(--muted);transition:color 0.2s,border-color 0.2s;
+}
+.btn-ghost:hover{color:var(--text);border-color:rgba(100,120,200,0.5)}
+
+.home-stats{
+  display:flex;gap:28px;font-family:var(--mono);font-size:0.7rem;color:var(--muted);
+}
+.home-stat strong{color:var(--cyan);font-size:1rem;display:block;font-weight:500}
+
+/* ══════════════════ QUIZ SCREEN ══════════════════ */
+#quiz{padding:0}
+
+.quiz-header{
+  position:sticky;top:0;z-index:10;
+  background:rgba(6,9,18,0.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;display:flex;align-items:center;gap:16px;
+}
+.quiz-back{
+  font-family:var(--mono);font-size:0.68rem;color:var(--muted);background:none;border:none;
+  cursor:pointer;letter-spacing:0.05em;padding:6px 10px;border-radius:6px;
+  transition:color 0.2s,background 0.2s;white-space:nowrap;
+}
+.quiz-back:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+.quiz-topic-lbl{
+  font-family:var(--mono);font-size:0.65rem;color:var(--blue);
+  letter-spacing:0.12em;text-transform:uppercase;white-space:nowrap;
+}
+.quiz-progress-wrap{flex:1;height:4px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:4px;transition:width 0.4s ease}
+.quiz-counter{font-family:var(--mono);font-size:0.7rem;color:var(--muted);white-space:nowrap}
+
+.quiz-body{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:2.5rem 1.5rem 3rem;max-width:720px;margin:0 auto;width:100%;
+}
+
+.question-meta{
+  display:flex;align-items:center;gap:10px;margin-bottom:1.4rem;align-self:flex-start;
+}
+.q-category{
+  font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--purple);border:1px solid rgba(155,109,255,0.25);border-radius:4px;padding:3px 10px;
+  background:rgba(155,109,255,0.06);
+}
+.q-number{font-family:var(--mono);font-size:0.65rem;color:var(--muted)}
+
+.question-text{
+  font-family:var(--head);font-size:clamp(1.1rem,3vw,1.45rem);font-weight:600;
+  line-height:1.4;margin-bottom:2rem;color:var(--text);align-self:flex-start;
+  letter-spacing:-0.01em;
+}
+
+.options{display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:1.8rem}
+.option{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;
+  transition:border-color 0.18s,background 0.18s,transform 0.12s;
+  font-size:0.95rem;color:var(--text);line-height:1.45;text-align:left;
+}
+.option:hover:not(.disabled){border-color:var(--border2);background:var(--surface2);transform:translateX(3px)}
+.option.disabled{cursor:default}
+.option.selected-wrong{border-color:var(--red);background:rgba(255,79,106,0.08)}
+.option.selected-wrong .opt-letter{background:var(--red);color:#000;border-color:var(--red)}
+.option.correct{border-color:var(--green);background:rgba(0,229,160,0.08)}
+.option.correct .opt-letter{background:var(--green);color:#000;border-color:var(--green)}
+.option.selected-correct{border-color:var(--green);background:rgba(0,229,160,0.12)}
+.option.selected-correct .opt-letter{background:var(--green);color:#000;border-color:var(--green)}
+
+.opt-letter{
+  width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--muted);
+  flex-shrink:0;transition:background 0.18s,color 0.18s,border-color 0.18s;
+}
+
+.explanation-box{
+  background:var(--surface2);border:1px solid var(--border2);border-radius:12px;
+  padding:18px 20px;width:100%;margin-bottom:1.5rem;
+  border-left:3px solid var(--green);
+  animation:slideIn 0.25s ease;
+}
+.explanation-box.wrong{border-left-color:var(--red)}
+.explanation-box .exp-head{
+  font-family:var(--mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.explanation-box.wrong .exp-head{color:var(--red)}
+.explanation-box:not(.wrong) .exp-head{color:var(--green)}
+.explanation-box p{font-size:0.87rem;color:var(--text);line-height:1.6}
+.explanation-box p code{
+  font-family:var(--mono);font-size:0.82em;color:var(--cyan);
+  background:rgba(0,212,255,0.08);border-radius:4px;padding:1px 5px;
+}
+
+@keyframes slideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.quiz-btn-row{display:flex;justify-content:space-between;align-items:center;width:100%}
+.btn-next{
+  font-family:var(--head);font-size:0.8rem;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;padding:12px 32px;border-radius:8px;cursor:pointer;
+  background:linear-gradient(135deg,var(--blue),var(--cyan));color:#000;border:none;
+  transition:transform 0.15s,box-shadow 0.2s,opacity 0.2s;
+}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(79,143,255,0.3)}
+.btn-next:disabled{opacity:0.25;cursor:default;transform:none;box-shadow:none}
+.bookmark-btn{
+  font-family:var(--mono);font-size:0.68rem;color:var(--muted);background:none;border:1px solid var(--border);
+  padding:8px 14px;border-radius:8px;cursor:pointer;letter-spacing:0.05em;transition:color 0.2s,border-color 0.2s;
+}
+.bookmark-btn:hover{color:var(--amber);border-color:rgba(255,184,48,0.4)}
+.bookmark-btn.bookmarked{color:var(--amber);border-color:rgba(255,184,48,0.4);background:rgba(255,184,48,0.06)}
+
+/* ══════════════════ RESULTS SCREEN ══════════════════ */
+#results{align-items:center;justify-content:center;padding:2rem 1.5rem;text-align:center}
+
+.results-ring-wrap{position:relative;width:140px;height:140px;margin:0 auto 1.5rem}
+.results-ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--surface2);stroke-width:10}
+.ring-fg{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1)}
+.ring-label{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.ring-pct{font-family:var(--head);font-size:2rem;font-weight:800;color:var(--text)}
+.ring-sub{font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.1em}
+
+.results-grade{
+  font-family:var(--head);font-size:1.6rem;font-weight:800;margin-bottom:0.3rem;letter-spacing:-0.02em;
+}
+.results-msg{font-size:0.9rem;color:var(--muted);margin-bottom:2rem;line-height:1.6}
+
+.results-stats{
+  display:flex;gap:20px;justify-content:center;margin-bottom:2.5rem;flex-wrap:wrap;
+}
+.res-stat{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:14px 22px;min-width:90px;
+}
+.res-stat-val{font-family:var(--head);font-size:1.4rem;font-weight:700;line-height:1}
+.res-stat-lbl{font-family:var(--mono);font-size:0.58rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px}
+
+.topic-breakdown{
+  width:100%;max-width:560px;margin:0 auto 2rem;
+  display:flex;flex-direction:column;gap:8px;
+}
+.topic-break-row{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;display:flex;align-items:center;gap:12px;
+}
+.topic-break-name{font-family:var(--mono);font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;flex:1;text-align:left}
+.topic-break-bar-wrap{flex:2;height:5px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.topic-break-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.topic-break-score{font-family:var(--mono);font-size:0.68rem;color:var(--text);white-space:nowrap}
+
+.results-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ══════════════════ REVIEW SCREEN ══════════════════ */
+#review{align-items:center;padding:2rem 1.5rem 3rem}
+.review-header{
+  text-align:center;margin-bottom:2rem;
+}
+.review-title{font-family:var(--head);font-size:1.8rem;font-weight:800;margin-bottom:0.3rem;letter-spacing:-0.02em}
+.review-sub{font-family:var(--mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em}
+
+.review-list{width:100%;max-width:700px;display:flex;flex-direction:column;gap:12px;margin-bottom:2rem}
+.review-item{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;
+}
+.review-item.ri-correct{border-left:3px solid var(--green)}
+.review-item.ri-wrong{border-left:3px solid var(--red)}
+.ri-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.ri-badge{
+  font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;
+  padding:2px 8px;border-radius:3px;
+}
+.ri-badge.correct{background:rgba(0,229,160,0.12);color:var(--green)}
+.ri-badge.wrong{background:rgba(255,79,106,0.12);color:var(--red)}
+.ri-cat{font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.06em}
+.ri-q{font-size:0.9rem;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.45}
+.ri-answers{display:flex;flex-direction:column;gap:4px;font-family:var(--mono);font-size:0.72rem}
+.ri-your{color:var(--red)}
+.ri-correct-ans{color:var(--green)}
+.ri-exp{font-size:0.8rem;color:var(--muted);margin-top:8px;line-height:1.55;padding-top:8px;border-top:1px solid var(--border)}
+
+/* ══════════════════ SCROLLBAR ══════════════════ */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--border2)}
+
+/* ══════════════════ RESPONSIVE ══════════════════ */
+@media(max-width:500px){
+  .quiz-header{padding:10px 14px;gap:10px}
+  .quiz-body{padding:1.5rem 1rem 2rem}
+  .topic-grid{grid-template-columns:1fr 1fr}
+  .home-stats{gap:18px}
+  .results-stats{gap:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ HOME ══════════════════ -->
+<div class="screen active" id="home">
+  <div class="home-badge">FBLA Cybersecurity Exam Prep</div>
+  <h1 class="home-title">
+    <span>CYBER</span>
+    <span>QUIZ</span>
+  </h1>
+  <p class="home-sub">
+    Master every topic covered on the <em>FBLA Cybersecurity</em> competitive event exam —
+    from network security to ethics, encryption to incident response.
+  </p>
+
+  <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;text-align:left;max-width:760px;width:100%;">
+    Select Topics (or leave all for full exam)
+  </div>
+  <div class="topic-grid" id="topic-grid"></div>
+
+  <div class="home-actions">
+    <button class="btn-primary" id="start-btn" onclick="startQuiz()">Start Quiz</button>
+    <button class="btn-ghost" onclick="startQuiz(true)">Quick 10 Questions</button>
+  </div>
+  <div class="home-stats">
+    <div class="home-stat"><strong id="stat-total">0</strong>Questions</div>
+    <div class="home-stat"><strong id="stat-topics">0</strong>Topics</div>
+    <div class="home-stat"><strong id="stat-best">—</strong>Best Score</div>
+  </div>
+</div>
+
+<!-- ══════════════════ QUIZ ══════════════════ -->
+<div class="screen" id="quiz">
+  <div class="quiz-header">
+    <button class="quiz-back" onclick="confirmBack()">← Back</button>
+    <span class="quiz-topic-lbl" id="quiz-topic-lbl">Loading...</span>
+    <div class="quiz-progress-wrap"><div class="quiz-progress-fill" id="quiz-progress" style="width:0%"></div></div>
+    <span class="quiz-counter" id="quiz-counter">0 / 0</span>
+  </div>
+  <div class="quiz-body">
+    <div class="question-meta">
+      <span class="q-category" id="q-category">—</span>
+      <span class="q-number" id="q-number">Q1</span>
+    </div>
+    <div class="question-text" id="question-text">Loading question...</div>
+    <div class="options" id="options"></div>
+    <div class="explanation-box" id="explanation-box" style="display:none">
+      <div class="exp-head" id="exp-head">Correct!</div>
+      <p id="exp-text"></p>
+    </div>
+    <div class="quiz-btn-row">
+      <button class="bookmark-btn" id="bookmark-btn" onclick="toggleBookmark()">☆ Flag</button>
+      <button class="btn-next" id="next-btn" onclick="nextQuestion()" disabled>Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ RESULTS ══════════════════ -->
+<div class="screen" id="results">
+  <div class="results-ring-wrap">
+    <svg viewBox="0 0 140 140" width="140" height="140">
+      <circle class="ring-bg" cx="70" cy="70" r="60"/>
+      <circle class="ring-fg" id="ring-fg" cx="70" cy="70" r="60" stroke-dasharray="377" stroke-dashoffset="377"/>
+    </svg>
+    <div class="ring-label">
+      <div class="ring-pct" id="ring-pct">0%</div>
+      <div class="ring-sub">Score</div>
+    </div>
+  </div>
+  <div class="results-grade" id="results-grade">—</div>
+  <div class="results-msg" id="results-msg">—</div>
+  <div class="results-stats">
+    <div class="res-stat"><div class="res-stat-val" style="color:var(--green)" id="res-correct">0</div><div class="res-stat-lbl">Correct</div></div>
+    <div class="res-stat"><div class="res-stat-val" style="color:var(--red)" id="res-wrong">0</div><div class="res-stat-lbl">Wrong</div></div>
+    <div class="res-stat"><div class="res-stat-val" style="color:var(--amber)" id="res-flagged">0</div><div class="res-stat-lbl">Flagged</div></div>
+    <div class="res-stat"><div class="res-stat-val" style="color:var(--blue)" id="res-time">0s</div><div class="res-stat-lbl">Time</div></div>
+  </div>
+  <div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px">Topic Breakdown</div>
+  <div class="topic-breakdown" id="topic-breakdown"></div>
+  <div class="results-actions">
+    <button class="btn-primary" onclick="reviewAnswers()">Review Answers</button>
+    <button class="btn-ghost" onclick="retryWrong()">Retry Wrong</button>
+    <button class="btn-ghost" onclick="showHome()">Home</button>
+  </div>
+</div>
+
+<!-- ══════════════════ REVIEW ══════════════════ -->
+<div class="screen" id="review">
+  <div class="review-header">
+    <div class="review-title">Answer Review</div>
+    <div class="review-sub" id="review-sub-lbl">—</div>
+  </div>
+  <div class="review-list" id="review-list"></div>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <button class="btn-primary" onclick="showResults()">Back to Results</button>
+    <button class="btn-ghost" onclick="showHome()">Home</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// QUESTION BANK — 150+ questions across all FBLA Cybersecurity topics
+// ══════════════════════════════════════════════════════════════════
+const QUESTIONS = [
+
+// ── NETWORK SECURITY ──
+{cat:"Network Security",q:"What does a firewall primarily do?",opts:["Encrypts all network traffic","Monitors and filters incoming/outgoing traffic based on rules","Backs up network data automatically","Assigns IP addresses to devices"],ans:1,exp:"A firewall controls network traffic using predefined security rules, acting as a barrier between trusted and untrusted networks."},
+{cat:"Network Security",q:"Which protocol is used to securely transfer files over a network?",opts:["FTP","HTTP","SFTP","SMTP"],ans:2,exp:"SFTP (SSH File Transfer Protocol) uses SSH to encrypt file transfers, unlike FTP which sends data in plaintext."},
+{cat:"Network Security",q:"What is a DMZ in network security?",opts:["A deactivated memory zone","A network segment that sits between the internal network and the internet","A type of VPN tunnel","A DNS management zone"],ans:1,exp:"A DMZ (Demilitarized Zone) is a subnet that exposes external-facing services (like web servers) while keeping the internal network protected."},
+{cat:"Network Security",q:"What is the purpose of a VPN?",opts:["Speed up internet connections","Create an encrypted tunnel over a public network","Block malicious websites","Manage user accounts"],ans:1,exp:"A VPN (Virtual Private Network) creates an encrypted tunnel over a public network, allowing secure remote access and protecting data in transit."},
+{cat:"Network Security",q:"What does IDS stand for?",opts:["Internet Defense System","Intrusion Detection System","Integrated Data Security","Internal DNS Server"],ans:1,exp:"An Intrusion Detection System (IDS) monitors network traffic for suspicious activity and known threats, generating alerts when detected."},
+{cat:"Network Security",q:"Which of the following is NOT a common network attack?",opts:["Man-in-the-Middle","Denial of Service","Polymorphic Execution","ARP Poisoning"],ans:2,exp:"Polymorphic Execution is not a standard network attack category. Man-in-the-Middle, DoS, and ARP Poisoning are all recognized network-layer attacks."},
+{cat:"Network Security",q:"What is a honeypot in cybersecurity?",opts:["A password vault","A decoy system designed to lure attackers","A type of firewall rule","An encrypted storage device"],ans:1,exp:"A honeypot is a decoy system intentionally set up to attract attackers, allowing security teams to study attack methods without risk to real systems."},
+{cat:"Network Security",q:"What port does HTTPS use by default?",opts:["80","21","443","8080"],ans:2,exp:"HTTPS uses port 443 by default. HTTP uses port 80. The 'S' in HTTPS indicates the connection is secured via TLS/SSL."},
+{cat:"Network Security",q:"What is MAC address filtering?",opts:["Filtering email from Mac computers","Restricting network access based on physical hardware addresses","A type of antivirus scan","Blocking specific IP ranges"],ans:1,exp:"MAC address filtering allows or denies network access based on a device's unique hardware (MAC) address, though it can be bypassed by MAC spoofing."},
+{cat:"Network Security",q:"What is network segmentation?",opts:["Dividing a network into smaller subnetworks to limit the spread of threats","Encrypting all network packets","Assigning static IPs to all devices","Disabling unused network ports"],ans:0,exp:"Network segmentation divides a network into subnetworks (segments), which limits lateral movement by attackers and reduces the attack surface."},
+{cat:"Network Security",q:"What is a zero-day vulnerability?",opts:["A bug that only affects systems on the first day of a month","An exploit with no existing patch or defense","A vulnerability in day-zero products","A type of DoS attack launched at midnight"],ans:1,exp:"A zero-day vulnerability is a flaw unknown to the vendor or the public, with no patch available. Attackers who discover it first have a significant advantage."},
+{cat:"Network Security",q:"What does NAT stand for?",opts:["Network Address Translation","Node Authentication Token","Network Access Tracking","Name Assignment Table"],ans:0,exp:"NAT (Network Address Translation) maps private IP addresses to a public IP, allowing multiple devices to share one public IP and adding a layer of obscurity."},
+
+// ── THREATS & ATTACKS ──
+{cat:"Threats & Attacks",q:"What is phishing?",opts:["Flooding a server with traffic","Deceiving users into revealing sensitive info via fake communications","Installing a keylogger on a device","Intercepting network packets"],ans:1,exp:"Phishing uses fraudulent emails, messages, or websites impersonating trusted entities to trick victims into revealing credentials or installing malware."},
+{cat:"Threats & Attacks",q:"What is ransomware?",opts:["Software that monitors employee activity","Malware that encrypts data and demands payment for decryption","A type of spam filter","A tool for password recovery"],ans:1,exp:"Ransomware encrypts a victim's files and demands a ransom (often cryptocurrency) for the decryption key. Notable examples include WannaCry and CryptoLocker."},
+{cat:"Threats & Attacks",q:"What is a DDoS attack?",opts:["An attack using a single computer to flood a server","An attack using many compromised systems to overwhelm a target","A technique to crack passwords","An attack on database records"],ans:1,exp:"A Distributed Denial of Service (DDoS) attack uses a botnet — many compromised computers — to flood a target with traffic, making it unavailable to users."},
+{cat:"Threats & Attacks",q:"What is a SQL injection attack?",opts:["Injecting malicious code into SQL database files","Inserting malicious SQL queries into input fields to manipulate a database","A physical attack on database hardware","Overloading a SQL server with queries"],ans:1,exp:"SQL injection inserts malicious SQL code into input fields, potentially letting attackers view, modify, or delete database data, and sometimes execute commands."},
+{cat:"Threats & Attacks",q:"What is a brute force attack?",opts:["Physically breaking into a server room","Systematically trying every possible password combination","Using social engineering to guess passwords","Intercepting encrypted passwords"],ans:1,exp:"A brute force attack systematically tries all possible passwords or encryption keys until the correct one is found. Longer, complex passwords make this computationally impractical."},
+{cat:"Threats & Attacks",q:"What is social engineering in cybersecurity?",opts:["Building professional networks for security research","Manipulating people into divulging confidential information","Engineering social media platforms","Developing security software collaboratively"],ans:1,exp:"Social engineering exploits human psychology rather than technical vulnerabilities, manipulating people into performing actions or revealing confidential information."},
+{cat:"Threats & Attacks",q:"What is a trojan horse in cybersecurity?",opts:["A type of hardware vulnerability","Malware disguised as legitimate software","An exploit kit for web browsers","A network scanning tool"],ans:1,exp:"A Trojan horse appears to be legitimate software but contains malicious code. Unlike viruses, they don't self-replicate; users are tricked into installing them."},
+{cat:"Threats & Attacks",q:"What is spear phishing?",opts:["Phishing attacks targeting random users en masse","Highly targeted phishing aimed at specific individuals or organizations","Phishing using SMS messages","Phishing via phone calls"],ans:1,exp:"Spear phishing is tailored phishing targeting a specific person or organization, often using personal details to appear more credible than generic phishing."},
+{cat:"Threats & Attacks",q:"What is vishing?",opts:["A type of visual hacking","Voice/phone-based phishing attacks","A virtual machine exploit","A video streaming hack"],ans:1,exp:"Vishing (voice phishing) uses phone calls to deceive victims into providing sensitive information, often impersonating banks, government agencies, or tech support."},
+{cat:"Threats & Attacks",q:"What is a man-in-the-middle (MITM) attack?",opts:["An attacker physically standing between two computers","An attacker secretly intercepts and possibly alters communication between two parties","An insider threat from a mid-level manager","A type of brute force attack"],ans:1,exp:"In an MITM attack, the attacker secretly positions themselves between two communicating parties, able to eavesdrop or alter data without either party knowing."},
+{cat:"Threats & Attacks",q:"What is a botnet?",opts:["A network of security robots","A collection of compromised computers controlled by an attacker","A type of antivirus software","A legitimate load-balancing cluster"],ans:1,exp:"A botnet is a network of infected computers (bots) under remote attacker control, used for DDoS attacks, spam campaigns, credential stuffing, and more."},
+{cat:"Threats & Attacks",q:"What is cross-site scripting (XSS)?",opts:["Copying code between websites","Injecting malicious scripts into web pages viewed by other users","A cross-platform coding technique","An attack on website SSL certificates"],ans:1,exp:"XSS injects malicious client-side scripts into web pages. When other users load the page, the script executes in their browser, potentially stealing session cookies."},
+{cat:"Threats & Attacks",q:"What is a rootkit?",opts:["A tool for managing Linux servers","Malware that hides its presence on a system while maintaining privileged access","A type of firewall","A physical security device"],ans:1,exp:"A rootkit provides continued privileged access to a system while actively hiding its presence from users and security software, making detection very difficult."},
+{cat:"Threats & Attacks",q:"What is tailgating in physical security?",opts:["Following someone's browsing history","Gaining unauthorized physical access by following an authorized person through a secured door","A type of network monitoring","Intercepting wireless signals"],ans:1,exp:"Tailgating (piggybacking) is when an unauthorized person follows an authorized person through a secured physical entry point without using their own credentials."},
+{cat:"Threats & Attacks",q:"Which type of malware records keystrokes?",opts:["Spyware","Keylogger","Adware","Ransomware"],ans:1,exp:"A keylogger records every keystroke made on a device, capturing passwords, credit card numbers, and other sensitive data, then transmitting it to the attacker."},
+
+// ── CRYPTOGRAPHY ──
+{cat:"Cryptography",q:"What is symmetric encryption?",opts:["Using two different keys for encryption and decryption","Using the same key for both encryption and decryption","Encryption that cannot be decrypted","A type of hashing algorithm"],ans:1,exp:"Symmetric encryption uses the same key for both encrypting and decrypting data. It's fast but requires securely sharing the key between parties. AES is a common example."},
+{cat:"Cryptography",q:"What is asymmetric encryption?",opts:["Encryption that only works on one side of a connection","Using a public key to encrypt and a private key to decrypt","Using the same key for encryption and decryption","A type of wireless encryption"],ans:1,exp:"Asymmetric (public-key) encryption uses a key pair: a public key encrypts data, and only the corresponding private key can decrypt it. RSA is a common example."},
+{cat:"Cryptography",q:"What does SSL/TLS do?",opts:["Scans websites for malware","Encrypts data in transit between a client and server","Assigns certificates to email servers","Creates virtual private networks"],ans:1,exp:"SSL (now replaced by TLS) encrypts communications between a browser and server, ensuring confidentiality and integrity. The padlock icon in a browser indicates TLS is in use."},
+{cat:"Cryptography",q:"What is a hash function?",opts:["A function that encrypts data with a key","A one-way function that converts data into a fixed-length digest","A function that compresses files","A network routing algorithm"],ans:1,exp:"A cryptographic hash function takes input of any size and produces a fixed-length output. It's one-way — you can't reverse the hash to get the original data. Used for integrity checking."},
+{cat:"Cryptography",q:"What does PKI stand for?",opts:["Private Key Infrastructure","Public Key Infrastructure","Packet Key Integration","Protocol Key Interface"],ans:1,exp:"Public Key Infrastructure (PKI) is a framework of policies and technologies for managing digital certificates and public-key encryption."},
+{cat:"Cryptography",q:"What is a digital signature?",opts:["An electronic handwritten signature","A cryptographic technique verifying message authenticity and integrity","A type of file encryption","A certificate authority"],ans:1,exp:"A digital signature uses asymmetric cryptography to verify that a message was sent by a specific sender (authenticity) and hasn't been altered (integrity)."},
+{cat:"Cryptography",q:"Which of the following is a symmetric encryption algorithm?",opts:["RSA","AES","ECC","Diffie-Hellman"],ans:1,exp:"AES (Advanced Encryption Standard) is the most widely used symmetric encryption algorithm. RSA and ECC are asymmetric; Diffie-Hellman is a key exchange protocol."},
+{cat:"Cryptography",q:"What is MD5 commonly used for?",opts:["Key exchange","File integrity verification (though no longer secure for passwords)","Symmetric encryption","Generating RSA keys"],ans:1,exp:"MD5 produces a 128-bit hash, historically used for file integrity checks. It's now considered cryptographically broken and should not be used for password hashing or security-sensitive tasks."},
+{cat:"Cryptography",q:"What is end-to-end encryption?",opts:["Encryption from the sender's device to the recipient's device that intermediaries cannot decrypt","Encryption only at the server side","Encryption between routers","Encryption of data at rest on hard drives"],ans:0,exp:"End-to-end encryption (E2EE) ensures only the communicating users can read messages. Even the service provider cannot decrypt them. WhatsApp and Signal use E2EE."},
+{cat:"Cryptography",q:"What is a certificate authority (CA)?",opts:["A government agency that regulates encryption","A trusted entity that issues digital certificates","A type of firewall","A network authentication server"],ans:1,exp:"A Certificate Authority (CA) is a trusted organization that verifies identities and issues digital certificates, forming the trust foundation of PKI and HTTPS."},
+{cat:"Cryptography",q:"What is salting in password security?",opts:["Encrypting passwords with a master key","Adding random data to a password before hashing to prevent rainbow table attacks","Compressing password databases","Using multiple hash rounds on passwords"],ans:1,exp:"Salting adds a unique random value to each password before hashing, meaning identical passwords produce different hashes, defeating precomputed rainbow table attacks."},
+{cat:"Cryptography",q:"What hashing algorithm produces a 256-bit output?",opts:["MD5","SHA-1","SHA-256","SHA-512"],ans:2,exp:"SHA-256 (part of the SHA-2 family) produces a 256-bit (64 hex character) hash. It's widely used in SSL/TLS certificates, blockchain, and digital signatures."},
+
+// ── ACCESS CONTROL & AUTHENTICATION ──
+{cat:"Access Control",q:"What is multi-factor authentication (MFA)?",opts:["Using multiple passwords","Requiring two or more verification factors from different categories","Using biometrics only","Logging in from multiple devices simultaneously"],ans:1,exp:"MFA requires two or more factors from: something you know (password), something you have (phone/token), something you are (biometric). Even if one factor is compromised, accounts remain protected."},
+{cat:"Access Control",q:"What is the principle of least privilege?",opts:["Give all users admin rights for efficiency","Grant users only the minimum access needed to perform their job","Apply equal access to all system resources","Remove all user restrictions"],ans:1,exp:"Least privilege limits user access rights to only what is necessary for their role, reducing the attack surface and limiting damage from compromised accounts or insider threats."},
+{cat:"Access Control",q:"What is Role-Based Access Control (RBAC)?",opts:["Granting access based on a user's physical location","Assigning permissions based on job roles rather than individual users","Access control based on time of day","Random access assignment"],ans:1,exp:"RBAC assigns permissions to roles (e.g., admin, editor, viewer) rather than individuals. Users are assigned roles, inheriting the permissions of that role."},
+{cat:"Access Control",q:"What is a password manager?",opts:["A person responsible for managing company passwords","Software that securely stores and generates strong passwords","A type of authentication server","A tool to recover forgotten passwords"],ans:1,exp:"A password manager stores encrypted passwords, generates strong unique passwords for each site, and autofills credentials, reducing password reuse and weak password risks."},
+{cat:"Access Control",q:"What does SSO stand for?",opts:["Secure Socket Option","Single Sign-On","System Security Override","Session Synchronization Object"],ans:1,exp:"Single Sign-On (SSO) allows users to authenticate once and access multiple applications without logging in again. Examples include Google or Microsoft account federation."},
+{cat:"Access Control",q:"What is biometric authentication?",opts:["Using a biological clock for time-based tokens","Verifying identity using unique biological characteristics like fingerprints or retinas","Authenticating with a biological science degree","Using animal sounds as passwords"],ans:1,exp:"Biometric authentication uses physiological characteristics (fingerprint, face, iris, voice) that are unique to individuals, providing a 'something you are' authentication factor."},
+{cat:"Access Control",q:"What is an access control list (ACL)?",opts:["A list of all employees with system access","A set of rules defining what access subjects have to objects","A log of all system access attempts","A list of blocked IP addresses"],ans:1,exp:"An ACL is a list of rules attached to a resource specifying which users or system processes have permission to access it and what operations they can perform."},
+{cat:"Access Control",q:"What is credential stuffing?",opts:["Physically installing fake credential scanners","Using stolen username/password pairs to attempt logins on multiple services","Padding credentials in transit","Guessing credentials based on personal information"],ans:1,exp:"Credential stuffing uses leaked credential databases from one breach to try those same username/password pairs on other services, exploiting widespread password reuse."},
+
+// ── SECURITY FRAMEWORKS & COMPLIANCE ──
+{cat:"Frameworks & Compliance",q:"What does NIST stand for?",opts:["National Institute of Security Technology","National Institute of Standards and Technology","Network Intrusion Security Team","National Information Systems Trust"],ans:1,exp:"NIST (National Institute of Standards and Technology) is a U.S. federal agency that develops cybersecurity standards and frameworks, including the widely used NIST Cybersecurity Framework."},
+{cat:"Frameworks & Compliance",q:"What are the five core functions of the NIST Cybersecurity Framework?",opts:["Plan, Do, Check, Act, Improve","Identify, Protect, Detect, Respond, Recover","Assess, Mitigate, Monitor, Report, Close","Prevent, Detect, Respond, Recover, Comply"],ans:1,exp:"The NIST CSF's five functions are: Identify (asset management), Protect (safeguards), Detect (anomalies), Respond (incident response), and Recover (restoration)."},
+{cat:"Frameworks & Compliance",q:"What does GDPR stand for?",opts:["General Data Protection Regulation","Global Digital Privacy Rights","Government Data Processing Rules","General Database Privacy Registry"],ans:0,exp:"GDPR (General Data Protection Regulation) is an EU law that governs how organizations collect, store, and process personal data of EU citizens, with significant penalties for violations."},
+{cat:"Frameworks & Compliance",q:"What does HIPAA regulate?",opts:["Financial data security","Healthcare information privacy and security in the U.S.","Internet service provider standards","Government network security"],ans:1,exp:"HIPAA (Health Insurance Portability and Accountability Act) establishes standards for protecting sensitive patient health information (PHI) in the United States."},
+{cat:"Frameworks & Compliance",q:"What is PCI DSS?",opts:["A programming security standard","Payment Card Industry Data Security Standard — rules for handling card data","A public cloud infrastructure security standard","Personal Computer Incident Detection System"],ans:1,exp:"PCI DSS is a set of security standards for organizations that handle payment card data, designed to reduce card fraud and protect cardholder information."},
+{cat:"Frameworks & Compliance",q:"What does CIA Triad stand for in security?",opts:["Central Intelligence Agency","Confidentiality, Integrity, Availability","Cryptography, Identity, Authentication","Control, Inspection, Auditing"],ans:1,exp:"The CIA Triad is the core model: Confidentiality (only authorized access), Integrity (data accuracy/completeness), and Availability (systems accessible when needed)."},
+{cat:"Frameworks & Compliance",q:"What is a security audit?",opts:["A financial review of security software purchases","A systematic evaluation of an organization's security posture against a standard","A background check on employees","A firewall configuration review only"],ans:1,exp:"A security audit is a systematic assessment of an organization's information system against established criteria, identifying gaps, vulnerabilities, and compliance issues."},
+{cat:"Frameworks & Compliance",q:"What is SOC 2?",opts:["A military security clearance level","A security compliance framework for service organizations handling customer data","A type of network monitoring standard","A two-step security certification for software"],ans:1,exp:"SOC 2 (Service Organization Control 2) is an auditing framework assessing a service organization's controls for security, availability, processing integrity, confidentiality, and privacy."},
+
+// ── RISK MANAGEMENT ──
+{cat:"Risk Management",q:"What is a risk assessment?",opts:["Insuring company assets","The process of identifying, analyzing, and evaluating risks","A background check process","Auditing financial records"],ans:1,exp:"A risk assessment systematically identifies threats, analyzes their likelihood and potential impact, and evaluates the effectiveness of existing controls to prioritize security investments."},
+{cat:"Risk Management",q:"What is the formula for risk?",opts:["Risk = Threat + Vulnerability","Risk = Threat × Vulnerability × Impact","Risk = Asset Value × Threat","Risk = Vulnerability ÷ Control"],ans:1,exp:"A common risk formula is Risk = Threat × Vulnerability × Impact (or similar variations). It considers how likely a threat is to exploit a vulnerability and the resulting damage."},
+{cat:"Risk Management",q:"What is vulnerability management?",opts:["Managing employee personalities","The ongoing process of identifying, evaluating, and remediating security weaknesses","Managing software licenses","A physical security process"],ans:1,exp:"Vulnerability management is a continuous cycle: scan systems for weaknesses, assess severity (e.g., using CVSS scores), prioritize patching, remediate, and verify fixes."},
+{cat:"Risk Management",q:"What is a business continuity plan (BCP)?",opts:["A plan for business expansion","A plan to ensure critical functions continue during and after a disaster","A marketing strategy","A plan to increase business revenue"],ans:1,exp:"A BCP documents procedures to maintain critical business functions during disruptions (cyberattacks, natural disasters, etc.) and defines recovery priorities and timelines."},
+{cat:"Risk Management",q:"What is the difference between RTO and RPO?",opts:["RTO is data recovery; RPO is system recovery","RTO is maximum acceptable downtime; RPO is maximum acceptable data loss","RTO is for hardware; RPO is for software","They mean the same thing"],ans:1,exp:"RTO (Recovery Time Objective) is how long a system can be down. RPO (Recovery Point Objective) is how much data loss is acceptable (how far back a restore can go)."},
+{cat:"Risk Management",q:"What is risk acceptance?",opts:["Fixing all identified risks","Transferring risk to a third party","Acknowledging and deciding to live with a risk without additional mitigation","Ignoring risks entirely"],ans:2,exp:"Risk acceptance is a deliberate decision to accept a risk, typically when mitigation cost exceeds potential impact. It requires documentation and management approval."},
+{cat:"Risk Management",q:"What is a threat model?",opts:["A 3D model of cybersecurity infrastructure","A structured process for identifying potential threats and prioritizing defenses","A simulation of network traffic","A model used in machine learning security"],ans:1,exp:"Threat modeling identifies potential threats, attack vectors, and asset values to prioritize security controls. Common frameworks include STRIDE and PASTA."},
+
+// ── INCIDENT RESPONSE ──
+{cat:"Incident Response",q:"What are the phases of the NIST incident response lifecycle?",opts:["Identify, Contain, Eradicate, Recover","Preparation, Detection & Analysis, Containment/Eradication/Recovery, Post-Incident Activity","Plan, Act, Monitor, Improve","Alert, Respond, Document, Close"],ans:1,exp:"NIST IR lifecycle: (1) Preparation — ready before incidents; (2) Detection & Analysis — identify incidents; (3) Containment, Eradication & Recovery — respond; (4) Post-Incident Activity — lessons learned."},
+{cat:"Incident Response",q:"What is the first step when an incident is detected?",opts:["Immediately shut down all systems","Notify the media","Contain the incident to prevent further damage","Reinstall the operating system"],ans:2,exp:"Containment is typically the first active response step — limiting the spread of the incident. Immediate system shutdown may destroy forensic evidence and is often not the first choice."},
+{cat:"Incident Response",q:"What is a CSIRT?",opts:["Critical System Intrusion Response Tool","Computer Security Incident Response Team","Centralized Security Information Repository Team","Cyber Threat Identification and Response Team"],ans:1,exp:"A CSIRT (Computer Security Incident Response Team) is a group responsible for receiving, reviewing, and responding to computer security incidents within an organization."},
+{cat:"Incident Response",q:"What is digital forensics?",opts:["Studying digital art history","The process of collecting and preserving digital evidence for legal proceedings","A type of network scan","Digital backup procedures"],ans:1,exp:"Digital forensics is the process of identifying, preserving, analyzing, and presenting digital evidence in a way that is legally admissible, used in criminal investigations and incident response."},
+{cat:"Incident Response",q:"What is a chain of custody?",opts:["A management chain in IT departments","Documentation showing who has handled evidence and when","A type of blockchain","A firewall rule chain"],ans:1,exp:"Chain of custody documents every person who handled evidence, when, and why, ensuring evidence integrity and admissibility in legal proceedings."},
+{cat:"Incident Response",q:"What does triage mean in incident response?",opts:["Deleting suspicious files","Prioritizing and classifying incidents based on severity","Notifying law enforcement","Restoring from backup"],ans:1,exp:"Triage in IR means assessing and prioritizing incidents by their scope and severity to ensure the most critical are addressed first, similar to medical triage."},
+
+// ── OPERATING SYSTEM & APPLICATION SECURITY ──
+{cat:"OS & Application Security",q:"What is patch management?",opts:["Applying cosmetic updates to software interfaces","The process of managing and applying software updates to fix vulnerabilities","Managing software licenses","Creating backup patches of data"],ans:1,exp:"Patch management involves identifying, testing, and applying software updates that fix vulnerabilities. Unpatched systems are one of the most exploited attack vectors."},
+{cat:"OS & Application Security",q:"What is the purpose of a sandbox?",opts:["Storing sensitive data securely","Isolating programs to prevent them from affecting the main system","A physical security enclosure","A network testing environment only"],ans:1,exp:"A sandbox is an isolated environment where suspicious code can execute without affecting the rest of the system. Antiviruses and browsers use sandboxing to contain potential threats."},
+{cat:"OS & Application Security",q:"What is privilege escalation?",opts:["Promoting an employee to a higher security role","An attack exploiting flaws to gain higher access rights than authorized","A feature to temporarily grant admin access","Increasing encryption key length"],ans:1,exp:"Privilege escalation exploits vulnerabilities to gain elevated permissions. Vertical escalation gains admin/root access; horizontal escalation accesses other users' resources at the same level."},
+{cat:"OS & Application Security",q:"What is input validation?",opts:["Validating that input devices work correctly","Checking and sanitizing user input to prevent injection attacks","A type of user authentication","Validating software licenses"],ans:1,exp:"Input validation ensures that application input meets expected format and type, rejecting or sanitizing malicious input before processing, preventing SQL injection, XSS, and buffer overflows."},
+{cat:"OS & Application Security",q:"What is a buffer overflow attack?",opts:["Filling a network buffer with normal traffic","Sending more data than a program's buffer can hold, overwriting adjacent memory","A type of DDoS attack","Overloading a file storage system"],ans:1,exp:"Buffer overflow occurs when more data is written to a buffer than it can hold, overwriting adjacent memory. Attackers craft input to overwrite control data and execute malicious code."},
+{cat:"OS & Application Security",q:"What is the purpose of an antivirus program?",opts:["Speed up computer performance","Detect, prevent, and remove malware","Encrypt hard drive contents","Manage software updates"],ans:1,exp:"Antivirus software detects known malware using signature databases and heuristic analysis, prevents infection, and removes detected threats from infected systems."},
+{cat:"OS & Application Security",q:"What is OWASP?",opts:["A government cybersecurity agency","An online community producing resources on web application security","A wireless security protocol","A type of software development framework"],ans:1,exp:"OWASP (Open Web Application Security Project) is a nonprofit foundation that produces free resources on web application security, including the famous OWASP Top 10 vulnerability list."},
+{cat:"OS & Application Security",q:"What is the OWASP Top 10?",opts:["The 10 most powerful cybersecurity companies","A list of the 10 most critical web application security risks","10 rules for secure coding","10 common network attacks"],ans:1,exp:"The OWASP Top 10 is a standard awareness document listing the 10 most critical web application security risks, helping developers understand and avoid common vulnerabilities."},
+
+// ── WIRELESS SECURITY ──
+{cat:"Wireless Security",q:"What is WPA3?",opts:["A web protection algorithm","The latest Wi-Fi security protocol, improving on WPA2","A type of VPN","A wireless intrusion detection system"],ans:1,exp:"WPA3 (Wi-Fi Protected Access 3) is the latest Wi-Fi security protocol, offering stronger encryption, protection against offline dictionary attacks, and enhanced IoT device security."},
+{cat:"Wireless Security",q:"What is an evil twin attack?",opts:["Having two identical passwords","Creating a rogue Wi-Fi access point mimicking a legitimate one","A type of twin computer virus","An attack using two simultaneous exploits"],ans:1,exp:"An evil twin attack sets up a fake Wi-Fi hotspot that mimics a legitimate one. Victims connecting to it have their traffic intercepted by the attacker."},
+{cat:"Wireless Security",q:"What does SSID stand for?",opts:["Secure Session ID","Service Set Identifier — the name of a Wi-Fi network","System Security Identification","Subnet Security ID"],ans:1,exp:"An SSID (Service Set Identifier) is the network name broadcast by a wireless access point. Hiding the SSID provides minimal security since it can easily be discovered."},
+{cat:"Wireless Security",q:"What is wardriving?",opts:["Driving fast to avoid network coverage","Searching for Wi-Fi networks while moving in a vehicle, often to find unsecured ones","A type of road traffic attack","Remote car hacking"],ans:1,exp:"Wardriving involves driving through areas with a device scanning for available Wi-Fi networks, mapping their locations and security. Often used to find unprotected networks."},
+{cat:"Wireless Security",q:"Which Wi-Fi security protocol is considered the least secure?",opts:["WPA3","WPA2","WPA","WEP"],ans:3,exp:"WEP (Wired Equivalent Privacy) is the oldest Wi-Fi security protocol and is completely broken — it can be cracked in minutes with freely available tools. Never use WEP."},
+{cat:"Wireless Security",q:"What is Bluetooth sniffing?",opts:["Detecting Bluetooth devices in range","Capturing Bluetooth communications to eavesdrop on data","A Bluetooth network scan","A type of Bluetooth malware"],ans:1,exp:"Bluetooth sniffing captures wireless Bluetooth communications between devices, potentially intercepting sensitive data like audio, files, or keystrokes from vulnerable devices."},
+
+// ── CLOUD SECURITY ──
+{cat:"Cloud Security",q:"What is the shared responsibility model in cloud security?",opts:["All security is the cloud provider's responsibility","Security responsibilities are divided between the cloud provider and the customer","The customer is responsible for all security","Government agencies share responsibility with providers"],ans:1,exp:"In the shared responsibility model, cloud providers secure the underlying infrastructure (hardware, facilities), while customers secure their data, applications, and configurations."},
+{cat:"Cloud Security",q:"What is a cloud access security broker (CASB)?",opts:["A cloud subscription management tool","A security policy enforcement point between cloud users and cloud services","A type of cloud firewall","A cloud backup system"],ans:1,exp:"A CASB is a security policy enforcement point sitting between users and cloud services, providing visibility, compliance enforcement, data security, and threat protection."},
+{cat:"Cloud Security",q:"What is Infrastructure as a Service (IaaS)?",opts:["A service that provides internet access","A cloud model providing virtualized computing infrastructure over the internet","Software applications delivered via the cloud","A managed security service"],ans:1,exp:"IaaS provides virtualized computing resources (VMs, storage, networking) over the internet. The customer manages the OS, middleware, and applications; the provider manages hardware."},
+{cat:"Cloud Security",q:"What is data residency?",opts:["Where developers live when working on cloud projects","The requirement that data be stored within specific geographic boundaries","A cloud data classification system","The age of stored data"],ans:1,exp:"Data residency refers to the geographic location where data is stored, a requirement of regulations like GDPR that mandate certain data stay within particular jurisdictions."},
+{cat:"Cloud Security",q:"What is a misconfigured S3 bucket?",opts:["A damaged storage hardware bucket","An AWS cloud storage container with overly permissive access settings exposing data publicly","A type of SQL injection","A misconfigured network switch"],ans:1,exp:"Misconfigured AWS S3 (Simple Storage Service) buckets with public read/write access have caused major breaches. Proper bucket policies and access controls are essential cloud security basics."},
+
+// ── SECURITY POLICIES & GOVERNANCE ──
+{cat:"Security Governance",q:"What is an acceptable use policy (AUP)?",opts:["A policy on how products can be sold","A document defining allowed use of company IT resources","A network usage monitoring tool","A compliance certification"],ans:1,exp:"An AUP outlines the rules employees must follow when using company technology, networks, and data — covering appropriate use, prohibited activities, and consequences for violations."},
+{cat:"Security Governance",q:"What is information security governance?",opts:["Managing cybersecurity vendor contracts","A framework ensuring security strategies align with business objectives","A government regulation","An auditing process"],ans:1,exp:"Information security governance is a framework of policies, roles, and processes ensuring that an organization's security activities align with its business goals and regulatory requirements."},
+{cat:"Security Governance",q:"What is a data classification policy?",opts:["A policy for organizing files by date","A framework categorizing data by sensitivity and required security controls","A database sorting algorithm","A policy for data deletion"],ans:1,exp:"Data classification categorizes information (e.g., Public, Internal, Confidential, Top Secret) to apply appropriate security controls and ensure compliance with regulations."},
+{cat:"Security Governance",q:"What is the purpose of security awareness training?",opts:["Training security staff on technical skills only","Educating all employees about threats and security best practices","Certifying employees in cybersecurity","Training employees to build security tools"],ans:1,exp:"Security awareness training teaches employees to recognize threats (phishing, social engineering), practice good security hygiene, and understand their role in protecting organizational assets."},
+{cat:"Security Governance",q:"What is a security policy?",opts:["A technical firewall rule","A formal document defining an organization's security objectives and requirements","A password reset procedure","A network configuration standard"],ans:1,exp:"A security policy is a formal document defining an organization's security goals, acceptable behaviors, responsibilities, and standards for protecting its information assets."},
+
+// ── PRIVACY & ETHICS ──
+{cat:"Privacy & Ethics",q:"What is personally identifiable information (PII)?",opts:["Public business information","Information that can be used to identify a specific individual","General demographic data","Publicly available census data"],ans:1,exp:"PII is any information that can identify a specific individual — including names, SSNs, email addresses, phone numbers, biometrics, and location data. PII requires special protection under many laws."},
+{cat:"Privacy & Ethics",q:"What is the right to be forgotten?",opts:["The right to remain silent during questioning","A person's right to request deletion of their personal data","The right to forget passwords","An exemption from security audits"],ans:1,exp:"The 'right to be forgotten' (RTBF), codified in GDPR Article 17, allows individuals to request that an organization delete their personal data under certain circumstances."},
+{cat:"Privacy & Ethics",q:"What is data minimization?",opts:["Storing data on smaller drives","Collecting only the minimum personal data needed for a specific purpose","Minimizing the number of databases","Compressing data to save space"],ans:1,exp:"Data minimization is a privacy principle (enshrined in GDPR) requiring that only the minimum necessary personal data be collected and retained for a specified purpose."},
+{cat:"Privacy & Ethics",q:"What is responsible disclosure in cybersecurity?",opts:["Publicly announcing vulnerabilities immediately","A practice where vulnerabilities are reported to the vendor before public disclosure, giving time to patch","Disclosing security breaches to regulators","Sharing threat intelligence with competitors"],ans:1,exp:"Responsible disclosure (also called coordinated disclosure) involves reporting vulnerabilities privately to the vendor first, allowing them to develop a fix before public disclosure."},
+{cat:"Privacy & Ethics",q:"What is the Computer Fraud and Abuse Act (CFAA)?",opts:["A law governing computer warranties","A U.S. federal law criminalizing unauthorized access to computers","A certification for ethical hackers","A policy for computer recycling"],ans:1,exp:"The CFAA is a U.S. federal cybersecurity law that criminalizes unauthorized access to computer systems and related fraud. It's the primary federal statute for prosecuting cybercrime."},
+{cat:"Privacy & Ethics",q:"What is a privacy impact assessment (PIA)?",opts:["A financial impact analysis","An assessment identifying privacy risks in new projects or systems","A physical security assessment","A compliance certification process"],ans:1,exp:"A PIA (or DPIA under GDPR) is a process to identify and minimize privacy risks of new projects, systems, or processes that handle personal data."},
+
+// ── PHYSICAL SECURITY ──
+{cat:"Physical Security",q:"What is a mantrap?",opts:["A type of network trap for intruders","An airlock-style entryway requiring authentication at each door before proceeding","A device for catching cable thieves","A physical barrier around server rooms"],ans:1,exp:"A mantrap is a small room with two locked doors — access to the second is only granted after identity is confirmed in the first, preventing tailgating into secure facilities."},
+{cat:"Physical Security",q:"What is the purpose of a clean desk policy?",opts:["Keeping offices aesthetically clean","Ensuring no sensitive documents or credentials are left visible when employees leave","A policy for cleaning computer hardware","Preventing unauthorized software installation"],ans:1,exp:"A clean desk policy requires employees to clear their desks of sensitive materials when leaving, preventing unauthorized persons from seeing or taking confidential information."},
+{cat:"Physical Security",q:"What is CCTV used for in security?",opts:["Monitoring employee productivity only","Surveillance, deterrence of threats, and evidence collection","Controlling network access","Authenticating personnel"],ans:1,exp:"CCTV (Closed-Circuit Television) provides physical surveillance for deterrence, real-time monitoring, and recording evidence of security incidents."},
+{cat:"Physical Security",q:"What is shoulder surfing?",opts:["Surfing the web over someone's shoulder","Gaining information by watching over a person's shoulder as they enter credentials","A type of wireless attack","Following someone through a secured door"],ans:1,exp:"Shoulder surfing is watching over someone's shoulder to observe them entering passwords, PINs, or other sensitive information, a low-tech but effective attack."},
+
+// ── SECURITY TOOLS ──
+{cat:"Security Tools",q:"What is a SIEM?",opts:["A type of firewall","Security Information and Event Management — a platform for real-time security monitoring and analysis","A secure email gateway","A software inventory management tool"],ans:1,exp:"A SIEM aggregates and correlates log data from across an organization's IT infrastructure, providing real-time analysis, alerting, and historical log management for security operations."},
+{cat:"Security Tools",q:"What is the purpose of penetration testing?",opts:["Testing how fast a network penetrates data","Simulating attacks to identify vulnerabilities before real attackers do","Testing the strength of physical barriers","Monitoring employee internet usage"],ans:1,exp:"Penetration testing (ethical hacking) simulates real-world attacks against systems with permission, identifying vulnerabilities that could be exploited before malicious actors find them."},
+{cat:"Security Tools",q:"What is Nmap used for?",opts:["Network malware removal","Network discovery and security scanning — mapping open ports and services","Password cracking","Log file management"],ans:1,exp:"Nmap (Network Mapper) is an open-source tool used for network discovery, port scanning, OS detection, and security auditing. It's a fundamental tool in both offensive and defensive security."},
+{cat:"Security Tools",q:"What is Wireshark?",opts:["A wireless security assessment tool","A network protocol analyzer that captures and analyzes network traffic","A web application firewall","A password auditing tool"],ans:1,exp:"Wireshark is a free, open-source packet analyzer that captures live network traffic and displays it for detailed analysis — used for troubleshooting and security analysis."},
+{cat:"Security Tools",q:"What is a vulnerability scanner?",opts:["A tool that removes vulnerabilities automatically","A tool that identifies known security weaknesses in systems and applications","A type of antivirus program","A tool for testing encryption strength"],ans:1,exp:"Vulnerability scanners (like Nessus, OpenVAS) automatically probe systems for known vulnerabilities, misconfigurations, and missing patches, helping prioritize remediation efforts."},
+{cat:"Security Tools",q:"What is the purpose of a web application firewall (WAF)?",opts:["Firewalling all web browsing","Filtering and monitoring HTTP traffic to protect web applications from attacks like XSS and SQLi","Speeding up web applications","Encrypting web application data"],ans:1,exp:"A WAF sits in front of a web application, inspecting HTTP traffic and blocking common attacks like SQL injection, XSS, and CSRF without modifying the application itself."},
+
+// ── SECURITY CONCEPTS ──
+{cat:"Security Concepts",q:"What is defense in depth?",opts:["Deeply understanding cybersecurity concepts","Using multiple layers of security controls so that if one fails, others continue to protect","Focusing all security resources on the network perimeter","A military-grade encryption standard"],ans:1,exp:"Defense in depth uses multiple, overlapping security layers (network, host, application, data) so that a breach of one layer doesn't result in a total compromise."},
+{cat:"Security Concepts",q:"What is the difference between a vulnerability, threat, and exploit?",opts:["They all mean the same thing","Vulnerability is a weakness; threat is a potential danger; exploit is code that takes advantage of a vulnerability","Vulnerability is an attack; threat is a weakness; exploit is a defense","Threat is a weakness; vulnerability is an attack; exploit is a warning"],ans:1,exp:"Vulnerability: a weakness in a system. Threat: a potential danger that could exploit a vulnerability. Exploit: actual code or technique that takes advantage of a vulnerability."},
+{cat:"Security Concepts",q:"What is non-repudiation?",opts:["Preventing someone from denying they performed an action, using digital evidence","A type of data backup","Refusing to negotiate with attackers","Denying attackers access to systems"],ans:0,exp:"Non-repudiation ensures that a party cannot deny having performed an action (sending a message, signing a document) through use of digital signatures and audit logs."},
+{cat:"Security Concepts",q:"What is the attack surface?",opts:["The screen area used for security dashboards","The sum of all possible points where an attacker could try to enter or extract data","A type of attack visualization","The physical location of an attack"],ans:1,exp:"The attack surface is all possible points of entry an attacker could exploit — open ports, services, applications, user accounts, and physical access points. Reducing it is a key security principle."},
+{cat:"Security Concepts",q:"What is obfuscation in security?",opts:["Making systems faster","Making something difficult to understand to obscure its true functionality or contents","A type of encryption","Removing unused code from software"],ans:1,exp:"Obfuscation makes code or data difficult to understand, used by attackers to hide malware and by defenders to protect intellectual property — though it's not a substitute for proper security."},
+{cat:"Security Concepts",q:"What is security through obscurity?",opts:["A very effective security strategy","A (generally discouraged) practice of relying on secrecy of design or implementation as the main security mechanism","A type of physical security","Using dark themes on security dashboards"],ans:1,exp:"Security through obscurity relies on keeping systems' design secret rather than securing them properly. It's widely considered insufficient — systems should be secure even if their design is known."},
+{cat:"Security Concepts",q:"What is threat intelligence?",opts:["Internal employee monitoring data","Evidence-based knowledge about existing or potential threats used to inform security decisions","Data collected by government agencies only","Intelligence gathered from AI systems"],ans:1,exp:"Threat intelligence is evidence-based information about threats — including indicators of compromise (IOCs), tactics, techniques, and procedures (TTPs) — used to make proactive security decisions."},
+{cat:"Security Concepts",q:"What is a CVE?",opts:["Certified Vulnerability Engineer","Common Vulnerabilities and Exposures — a public dictionary of known security vulnerabilities","Critical Virus Elimination","Cloud Vulnerability Exposure"],ans:1,exp:"CVE (Common Vulnerabilities and Exposures) is a public reference system for known cybersecurity vulnerabilities, each assigned a unique ID (e.g., CVE-2021-44228 for Log4Shell)."},
+
+// ── EMERGING TOPICS ──
+{cat:"Emerging Topics",q:"What is the Internet of Things (IoT) security challenge?",opts:["IoT devices are too expensive to secure","IoT devices often have limited security features, weak default credentials, and receive infrequent updates","IoT devices don't connect to the internet","IoT security is more advanced than traditional security"],ans:1,exp:"IoT devices often run minimal firmware with no update mechanism, use default or weak credentials, and lack proper encryption — creating a massive attack surface as billions connect to networks."},
+{cat:"Emerging Topics",q:"What is AI/ML being used for in cybersecurity?",opts:["Replacing all human security analysts","Detecting anomalies, improving threat detection speed, and automating response","Making encryption keys","Building physical security systems"],ans:1,exp:"AI/ML is applied to detect anomalies in large data sets, accelerate threat detection (behavioral analysis vs. signature-based), automate response, and predict emerging threats."},
+{cat:"Emerging Topics",q:"What is quantum computing's potential impact on encryption?",opts:["It makes current encryption stronger","It could break many current public-key encryption algorithms (RSA, ECC) due to its ability to factor large numbers rapidly","It only affects symmetric encryption","It has no impact on cryptography"],ans:1,exp:"Quantum computers running Shor's algorithm could break RSA and ECC by efficiently factoring large numbers. Post-quantum cryptography (NIST standardized in 2024) is being developed to address this."},
+{cat:"Emerging Topics",q:"What is a deepfake and its security risk?",opts:["A type of deep web malware","AI-generated synthetic media (images/video/audio) that can be used for impersonation and disinformation","A deepfake is always legal","A physical security device"],ans:1,exp:"Deepfakes use AI (GANs) to create realistic synthetic media, posing risks including impersonation of executives for fraud, disinformation campaigns, and evidence fabrication."},
+{cat:"Emerging Topics",q:"What is supply chain security?",opts:["Securing shipping and logistics systems only","Ensuring security across all third-party vendors, software components, and hardware that an organization relies on","Managing software vendor contracts","A type of risk insurance"],ans:1,exp:"Supply chain security addresses risks from third-party components — software libraries, hardware, or services — that could be compromised to attack downstream organizations (e.g., SolarWinds attack)."},
+{cat:"Emerging Topics",q:"What is DevSecOps?",opts:["A team of developers and security staff","Integrating security practices into every phase of the DevOps pipeline from the start","A type of secure development language","A compliance framework for developers"],ans:1,exp:"DevSecOps integrates security into the software development lifecycle from the beginning ('shift left'), rather than adding security as an afterthought after development is complete."},
+];
+
+// ══════════════════════════════════════════════════════════════════
+// TOPIC CONFIGURATION
+// ══════════════════════════════════════════════════════════════════
+const TOPIC_CONFIG = [
+  {name:"Network Security",     icon:"🌐", color:"#4f8fff"},
+  {name:"Threats & Attacks",    icon:"⚡", color:"#ff4f6a"},
+  {name:"Cryptography",         icon:"🔐", color:"#9b6dff"},
+  {name:"Access Control",       icon:"🔑", color:"#00d4ff"},
+  {name:"Frameworks & Compliance",icon:"📋",color:"#00e5a0"},
+  {name:"Risk Management",      icon:"⚖️", color:"#ffb830"},
+  {name:"Incident Response",    icon:"🚨", color:"#ff6b35"},
+  {name:"OS & Application Security",icon:"💻",color:"#4f8fff"},
+  {name:"Wireless Security",    icon:"📶", color:"#00d4ff"},
+  {name:"Cloud Security",       icon:"☁️", color:"#9b6dff"},
+  {name:"Security Governance",  icon:"🏛️", color:"#00e5a0"},
+  {name:"Privacy & Ethics",     icon:"🛡️", color:"#ffb830"},
+  {name:"Physical Security",    icon:"🏢", color:"#ff4f6a"},
+  {name:"Security Tools",       icon:"🔧", color:"#4f8fff"},
+  {name:"Security Concepts",    icon:"💡", color:"#9b6dff"},
+  {name:"Emerging Topics",      icon:"🚀", color:"#00e5a0"},
+];
+
+// ══════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════
+let selectedTopics = new Set();
+let quizQuestions = [], currentIdx = 0;
+let answers = []; // {qi, correct, selected}
+let bookmarked = new Set();
+let startTime = 0;
+let lastResults = null;
+
+// ══════════════════════════════════════════════════════════════════
+// HOME SCREEN INIT
+// ══════════════════════════════════════════════════════════════════
+function initHome(){
+  const grid = document.getElementById('topic-grid');
+  grid.innerHTML = '';
+  TOPIC_CONFIG.forEach(tc => {
+    const count = QUESTIONS.filter(q=>q.cat===tc.name).length;
+    const div = document.createElement('div');
+    div.className='topic-card'+(selectedTopics.has(tc.name)?' selected':'');
+    div.style.setProperty('--card-color',tc.color);
+    div.innerHTML=`
+      <div class="topic-check">✓</div>
+      <div class="topic-icon">${tc.icon}</div>
+      <div class="topic-name">${tc.name}</div>
+      <div class="topic-count">${count} questions</div>
+    `;
+    div.onclick=()=>toggleTopic(tc.name,div);
+    grid.appendChild(div);
+  });
+  updateHomeStats();
+  const best = localStorage.getItem('fbla_best');
+  if(best) document.getElementById('stat-best').textContent = best+'%';
+}
+
+function toggleTopic(name,el){
+  if(selectedTopics.has(name)){selectedTopics.delete(name);el.classList.remove('selected');}
+  else{selectedTopics.add(name);el.classList.add('selected');}
+  updateHomeStats();
+}
+
+function updateHomeStats(){
+  const active = selectedTopics.size===0
+    ? QUESTIONS
+    : QUESTIONS.filter(q=>selectedTopics.has(q.cat));
+  document.getElementById('stat-total').textContent = active.length;
+  document.getElementById('stat-topics').textContent = selectedTopics.size||TOPIC_CONFIG.length;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// QUIZ LOGIC
+// ══════════════════════════════════════════════════════════════════
+function shuffle(arr){return arr.slice().sort(()=>Math.random()-0.5);}
+
+function startQuiz(quick=false){
+  let pool = selectedTopics.size===0
+    ? QUESTIONS.slice()
+    : QUESTIONS.filter(q=>selectedTopics.has(q.cat));
+  pool = shuffle(pool);
+  if(quick) pool = pool.slice(0,10);
+  quizQuestions = pool;
+  currentIdx = 0;
+  answers = [];
+  bookmarked = new Set();
+  startTime = Date.now();
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = quizQuestions[currentIdx];
+  if(!q){finishQuiz();return;}
+  const total = quizQuestions.length;
+  const pct = (currentIdx/total*100).toFixed(1);
+  document.getElementById('quiz-progress').style.width = pct+'%';
+  document.getElementById('quiz-counter').textContent = (currentIdx+1)+' / '+total;
+  document.getElementById('quiz-topic-lbl').textContent = q.cat;
+  document.getElementById('q-category').textContent = q.cat;
+  document.getElementById('q-number').textContent = 'Q'+(currentIdx+1);
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('explanation-box').style.display='none';
+  document.getElementById('next-btn').disabled = true;
+  const bm = document.getElementById('bookmark-btn');
+  bm.className = 'bookmark-btn'+(bookmarked.has(currentIdx)?' bookmarked':'');
+  bm.textContent = bookmarked.has(currentIdx)?'★ Flagged':'☆ Flag';
+
+  const optWrap = document.getElementById('options');
+  optWrap.innerHTML='';
+  const letters=['A','B','C','D'];
+  q.opts.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='option';
+    div.innerHTML=`<div class="opt-letter">${letters[i]}</div><span>${opt}</span>`;
+    div.onclick=()=>selectAnswer(i);
+    optWrap.appendChild(div);
+  });
+}
+
+function selectAnswer(selected){
+  const q = quizQuestions[currentIdx];
+  const opts = document.querySelectorAll('.option');
+  opts.forEach(o=>o.classList.add('disabled'));
+  const correct = selected===q.ans;
+  answers.push({qi:currentIdx,correct,selected,question:q});
+  opts[q.ans].classList.add('correct');
+  if(!correct) opts[selected].classList.add('selected-wrong');
+  else opts[selected].classList.add('selected-correct');
+  const expBox = document.getElementById('explanation-box');
+  expBox.className = 'explanation-box'+(correct?'':' wrong');
+  document.getElementById('exp-head').textContent = correct?'✓ Correct!':'✗ Incorrect';
+  document.getElementById('exp-text').innerHTML = q.exp;
+  expBox.style.display='block';
+  document.getElementById('next-btn').disabled=false;
+}
+
+function nextQuestion(){
+  currentIdx++;
+  if(currentIdx>=quizQuestions.length){finishQuiz();}
+  else{renderQuestion();}
+}
+
+function toggleBookmark(){
+  if(bookmarked.has(currentIdx)){bookmarked.delete(currentIdx);}
+  else{bookmarked.add(currentIdx);}
+  const bm=document.getElementById('bookmark-btn');
+  bm.className='bookmark-btn'+(bookmarked.has(currentIdx)?' bookmarked':'');
+  bm.textContent=bookmarked.has(currentIdx)?'★ Flagged':'☆ Flag';
+}
+
+function confirmBack(){
+  if(confirm('Leave this quiz? Your progress will be lost.')){showHome();}
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════════════════════════════
+function finishQuiz(){
+  const elapsed = Math.round((Date.now()-startTime)/1000);
+  const correct = answers.filter(a=>a.correct).length;
+  const total = answers.length;
+  const pct = total>0?Math.round(correct/total*100):0;
+
+  // Save best
+  const prev = parseInt(localStorage.getItem('fbla_best')||'0');
+  if(pct>prev){localStorage.setItem('fbla_best',pct);document.getElementById('stat-best').textContent=pct+'%';}
+
+  lastResults = {correct,total,pct,elapsed,answers,bookmarked:new Set(bookmarked)};
+  showResults();
+}
+
+function showResults(){
+  if(!lastResults) return;
+  const {correct,total,pct,elapsed,answers} = lastResults;
+  showScreen('results');
+
+  // Ring animation
+  const circumference=377;
+  const offset=circumference-(pct/100*circumference);
+  const ring=document.getElementById('ring-fg');
+  let color=pct>=80?'#00e5a0':pct>=60?'#ffb830':'#ff4f6a';
+  ring.style.stroke=color;
+  ring.style.strokeDashoffset=circumference;
+  setTimeout(()=>ring.style.strokeDashoffset=offset,100);
+  document.getElementById('ring-pct').textContent=pct+'%';
+  document.getElementById('ring-pct').style.color=color;
+
+  let grade,msg;
+  if(pct>=95){grade='A+';msg='Outstanding! You\'re exam-ready. Top scorer material.';}
+  else if(pct>=90){grade='A';msg='Excellent work! Minor review areas identified.';}
+  else if(pct>=80){grade='B';msg='Good job! Review flagged topics to push higher.';}
+  else if(pct>=70){grade='C';msg='Decent start. Focus on your weak areas below.';}
+  else if(pct>=60){grade='D';msg='Needs work. Review the fundamentals and retry.';}
+  else{grade='F';msg='Keep studying. Use the review feature to understand mistakes.';}
+  document.getElementById('results-grade').textContent=grade+' — '+pct+'%';
+  document.getElementById('results-grade').style.color=color;
+  document.getElementById('results-msg').textContent=msg;
+  document.getElementById('res-correct').textContent=correct;
+  document.getElementById('res-wrong').textContent=total-correct;
+  document.getElementById('res-flagged').textContent=lastResults.bookmarked.size;
+  document.getElementById('res-time').textContent=elapsed>60?Math.floor(elapsed/60)+'m '+(elapsed%60)+'s':elapsed+'s';
+
+  // Topic breakdown
+  const byTopic={};
+  answers.forEach(a=>{
+    const cat=a.question.cat;
+    if(!byTopic[cat]) byTopic[cat]={correct:0,total:0};
+    byTopic[cat].total++;
+    if(a.correct) byTopic[cat].correct++;
+  });
+  const breakdown=document.getElementById('topic-breakdown');
+  breakdown.innerHTML='';
+  Object.entries(byTopic).forEach(([cat,data])=>{
+    const p=Math.round(data.correct/data.total*100);
+    const tc=TOPIC_CONFIG.find(t=>t.name===cat);
+    const row=document.createElement('div');
+    row.className='topic-break-row';
+    row.innerHTML=`
+      <div class="topic-break-name">${tc?tc.icon:''} ${cat}</div>
+      <div class="topic-break-bar-wrap"><div class="topic-break-bar" style="width:${p}%;background:${p>=70?'linear-gradient(90deg,#00e5a0,#4f8fff)':'linear-gradient(90deg,#ff4f6a,#ffb830)'}"></div></div>
+      <div class="topic-break-score" style="color:${p>=70?'#00e5a0':'#ff4f6a'}">${data.correct}/${data.total}</div>
+    `;
+    breakdown.appendChild(row);
+  });
+}
+
+function reviewAnswers(){
+  if(!lastResults) return;
+  const list=document.getElementById('review-list');
+  list.innerHTML='';
+  const {answers}=lastResults;
+  document.getElementById('review-sub-lbl').textContent=`${answers.filter(a=>a.correct).length} / ${answers.length} correct`;
+  answers.forEach((a,i)=>{
+    const q=a.question;
+    const div=document.createElement('div');
+    div.className='review-item '+(a.correct?'ri-correct':'ri-wrong');
+    div.innerHTML=`
+      <div class="ri-meta">
+        <span class="ri-badge ${a.correct?'correct':'wrong'}">${a.correct?'Correct':'Wrong'}</span>
+        <span class="ri-cat">${q.cat}</span>
+      </div>
+      <div class="ri-q">${q.q}</div>
+      <div class="ri-answers">
+        ${!a.correct?`<div class="ri-your">✗ Your answer: ${q.opts[a.selected]}</div>`:''}
+        <div class="ri-correct-ans">✓ Correct: ${q.opts[q.ans]}</div>
+      </div>
+      <div class="ri-exp">${q.exp}</div>
+    `;
+    list.appendChild(div);
+  });
+  showScreen('review');
+}
+
+function retryWrong(){
+  if(!lastResults) return;
+  const wrong=lastResults.answers.filter(a=>!a.correct).map(a=>a.question);
+  if(wrong.length===0){alert('You got everything right! Try a new quiz.');return;}
+  quizQuestions=shuffle(wrong);
+  currentIdx=0;
+  answers=[];
+  bookmarked=new Set();
+  startTime=Date.now();
+  showScreen('quiz');
+  renderQuestion();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function showHome(){showScreen('home');initHome();}
+function showResults(){
+  if(lastResults) showScreen('results');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+initHome();
+</script>
+</body>
+</html>
